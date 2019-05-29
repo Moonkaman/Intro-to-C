@@ -13,7 +13,7 @@
 char *string_dup(char *src)
 {
   int srcLen = string_length(src);
-  char *dup = malloc(srcLen);
+  char *dup = malloc(srcLen + 1);
   char *start = dup;
   while (*src)
   {
@@ -36,9 +36,17 @@ void mem_copy(void *dest, const void *src, int n)
 {
   char *cast_dest = (char *)dest;
   char *cast_src = (char *)src;
-  for (int i = 0; i <= n; i++)
+  // for (int i = 0; i < n; i++)
+  // {
+  //   *(cast_dest + i) = *(cast_src + i);
+  // }
+  int i = 0;
+  while (i < n)
   {
-    *(cast_dest + i) = *(cast_src + i);
+    *cast_dest = *cast_src;
+    cast_src++;
+    cast_dest++;
+    i++;
   }
 }
 
@@ -70,12 +78,7 @@ void *resize_memory(void *ptr, int old_size, int new_size)
   }
   else
   {
-    while (string_length(new_ptr) <= new_size)
-    {
-      *new_ptr = *cast_ptr;
-      new_ptr++;
-      cast_ptr++;
-    }
+    mem_copy(new_ptr, ptr, new_size);
     return begin;
   }
 }
@@ -109,9 +112,9 @@ int main(void)
   int url_length = string_length(url);
   int path_length = string_length(path);
 
-  printf("url length is %d\n", url_length - 1 + path_length);
+  // printf("url length is %d\n", url_length - 1 + path_length);
 
-  int new_length = url_length - 1 + path_length;
+  int new_length = url_length + 1 + path_length;
   char *new_url = resize_memory(url, url_length, new_length);
   char *p = new_url + url_length;
 
@@ -121,6 +124,10 @@ int main(void)
     p++;
     path++;
   }
+
+  char *new_new_url = resize_memory(new_url, new_length, 8);
+
+  printf("%s\n", new_new_url);
 
   printf("Full path string: %s\n", new_url);
 
